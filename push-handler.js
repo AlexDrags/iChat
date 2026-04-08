@@ -26,7 +26,15 @@ self.addEventListener('push', (event) => {
       //   timestamp: Date.now(),
       //   actions: pushData.actions || [],
       // }
-      self.registration.showNotification(pushData.title, pushData.body)
+
+      const notificationOptions = {
+        body: pushData.body || 'Новое сообщение',
+        icon: pushData.icon || '/icons/icon-192x192.png',
+        badge: pushData.badge || '/icons/icon-128x128.png',
+        data: pushData.data,
+        vibrate: pushData.vibrate || [200, 100, 200],
+      }
+      self.registration.showNotification(pushData.title || 'Новое сообщение', notificationOptions)
     } catch (error) {
       console.error('Push notification error:', error)
     }
