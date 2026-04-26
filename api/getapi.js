@@ -1,9 +1,12 @@
 window.frontgetapi = {
   call: async function get() {
-    const params = new URL(window.parent.location.href).hash.slice(3).split('|')
-    const nocoKey = params[0]
-    const basicKey = params[1]
-
+    // const params = new URL(window.location.href).hash.slice(3).split('|')
+    const env = Object.fromEntries(new URLSearchParams(window.location.hash.substring(3)))
+    const envArray = env['keys'].split('|')
+    console.log('Полученные параметры:', env)
+    const nocoKey = envArray[0]
+    const basicKey = envArray[1]
+    console.log(nocoKey, basicKey)
     try {
       console.log('Запрос списка пользователей...')
       const usersRes = await fetch(
