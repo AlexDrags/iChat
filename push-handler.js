@@ -11,7 +11,7 @@ self.addEventListener('push', (event) => {
   if (event.data) {
     try {
       const pushData = event.data.json()
-      console.log('pushData', pushData)
+      // console.log('pushData', pushData)
       // const notificationOptions = {
       //   title: pushData.title || 'Новое сообщение',
       //   body: pushData.body || 'Новое сообщение',
