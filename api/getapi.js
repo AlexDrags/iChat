@@ -1,7 +1,8 @@
 window.frontgetapi = {
   call: async function get() {
     // const params = new URL(window.location.href).hash.slice(3).split('|')
-    const env = Object.fromEntries(new URLSearchParams(window.location.hash.substring(3)))
+    const env = Object.fromEntries(new URLSearchParams(window.location.hash.substring(1)))
+    console.log('Запуск функции get...', env)
     const envArray = env['keys'].split('|')
     console.log('Полученные параметры:', env)
     const nocoKey = envArray[0]
