@@ -14,7 +14,7 @@
   </head>
   <body>
     Loading ...
-    <script type="module" src="./getapi.js"></script>
+    <!-- <script type="module" src="./getapi.js"></script> -->
     <script type="module">
       if (window.frontgetapi) {
         console.log('get html active')
@@ -44,34 +44,34 @@
           }, 500)
         })()
 
-        window.addEventListener('message', (event) => {
-          console.log('Получено сообщение из родителя в get:', event.data)
-          ;(async function getAll() {
-          const result = await window.frontgetapi.call()
-          console.log('Result in get html', result)
-          setTimeout(() => {
-            console.log('get html отправляет данные  в iframe:', result)
-            window.parent.postMessage(
-              {
-                userList: result['users'],
-                msgList: result['messages'],
-              },
-              '*',
-            )
-            document.body.innerHTML =
-              '<pre>' +
-              JSON.stringify(
-                {
-                  userList: result['users'],
-                  msgList: result['messages'],
-                },
-                null,
-                2,
-              ) +
-              '</pre>'
-          }, 500)})()
-          // Здесь вы можете обработать полученные данные
-        })
+        // window.addEventListener('message', (event) => {
+        //   console.log('Получено сообщение из родителя в get:', event.data)
+        //   ;(async function getAll() {
+        //   const result = await window.frontgetapi.call()
+        //   console.log('Result in get html', result)
+        //   setTimeout(() => {
+        //     console.log('get html отправляет данные  в iframe:', result)
+        //     window.parent.postMessage(
+        //       {
+        //         userList: result['users'],
+        //         msgList: result['messages'],
+        //       },
+        //       '*',
+        //     )
+        //     document.body.innerHTML =
+        //       '<pre>' +
+        //       JSON.stringify(
+        //         {
+        //           userList: result['users'],
+        //           msgList: result['messages'],
+        //         },
+        //         null,
+        //         2,
+        //       ) +
+        //       '</pre>'
+        //   }, 500)})()
+        //   // Здесь вы можете обработать полученные данные
+        // })
       }
     </script>
   </body>
