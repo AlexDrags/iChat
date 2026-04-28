@@ -1,14 +1,12 @@
 window.frontgetusersapi = {
   call: async function get() {
-    // const params = new URL(window.location.href).hash.slice(3).split('|')
-    const env = localStorage.getItem('__frontapi_env_vars')
-      ? JSON.parse(localStorage.getItem('__frontapi_env_vars'))
-      : {}
-    console.log('Запуск функции get...', env)
-    const envArray = env['keys'].split('|')
-    console.log('Полученные параметры:', env)
-    const nocoKey = envArray[0]
-    const basicKey = envArray[1]
+    const params = new URLSearchParams(window.location.hash.substring(1))
+    const keys = params.get('keys')
+    const envKeys = keys.split('|')
+
+    console.log('envKeys =>', envKeys)
+    const nocoKey = envKeys[0]
+    const basicKey = envKeys[1]
     console.log(nocoKey, basicKey)
     try {
       console.log('Запрос списка пользователей...')

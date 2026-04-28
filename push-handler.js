@@ -11,20 +11,30 @@ self.addEventListener('push', (event) => {
   if (event.data) {
     try {
       const pushData = event.data.json()
+      // console.log('pushData', pushData)
+      // const notificationOptions = {
+      //   title: pushData.title || 'Новое сообщение',
+      //   body: pushData.body || 'Новое сообщение',
+      //   icon: pushData.icon || '/icon-192x192.png',
+      //   badge: pushData.badge || '/badge-72x72.png',
+      //   image: pushData.image,
+      //   tag: pushData.tag || 'default',
+      //   data: pushData.data,
+      //   requireInteraction: pushData.requireInteraction || false,
+      //   silent: pushData.silent || false,
+      //   vibrate: pushData.vibrate || [200, 100, 200],
+      //   timestamp: Date.now(),
+      //   actions: pushData.actions || [],
+      // }
+
       const notificationOptions = {
         body: pushData.body || 'Новое сообщение',
-        icon: pushData.icon || '/icon-192x192.png',
-        badge: pushData.badge || '/badge-72x72.png',
-        image: pushData.image,
-        tag: pushData.tag || 'default',
+        icon: pushData.icon || '/icons/icon-192x192.png',
+        badge: pushData.badge || '/icons/icon-128x128.png',
         data: pushData.data,
-        requireInteraction: pushData.requireInteraction || false,
-        silent: pushData.silent || false,
         vibrate: pushData.vibrate || [200, 100, 200],
-        timestamp: Date.now(),
-        actions: pushData.actions || [],
       }
-      self.registration.showNotification(pushData.title, pushData)
+      self.registration.showNotification(pushData.title || 'Новое сообщение', notificationOptions)
     } catch (error) {
       console.error('Push notification error:', error)
     }
