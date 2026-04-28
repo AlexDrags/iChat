@@ -1,13 +1,13 @@
-import { registerRoute } from 'workbox-routing'
-import { NetworkFirst } from 'workbox-strategies'
-registerRoute(
-  ({ url }) => url.pathname.includes('/api/'),
-  new NetworkFirst({
-    cacheName: 'api-cache',
-    networkTimeoutSeconds: 3,
-    plugins: [], // можно добавить плагины при необходимости
-  }),
-)
+self.addEventListener('fetch', (event) => {
+  // Если запрос к API - всегда ходим в сеть
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(fetch(event.request))
+    return
+  }
+  // Для остальных запросов используем стандартную логику
+  // (они будут обработаны Workbox'ом)
+})
+
 self.addEventListener('install', () => {
   self.skipWaiting()
 })
