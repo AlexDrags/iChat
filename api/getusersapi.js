@@ -1,10 +1,17 @@
 window.frontgetusersapi = {
   call: async function get() {
     // const params = new URL(window.location.href).hash.slice(3).split('|')
-    const env = localStorage.getItem('__frontapi_env_vars')
-      ? JSON.parse(localStorage.getItem('__frontapi_env_vars'))
-      : {}
-    console.log('Запуск функции get...', env)
+    // const env = localStorage.getItem('__frontapi_env_vars')
+    //   ? JSON.parse(localStorage.getItem('__frontapi_env_vars'))
+    //   : {}
+    const hashSubstring = window.location.hash.substring(1, 249)
+    console.log('hashSubstring:', hashSubstring)
+    const decode = decodeURIComponent(hashSubstring)
+    console.log('decode: ', decode)
+    const env = JSON.parse(decode)
+
+    console.log('env:', env)
+    console.log('Запуск функции getusersapi...', env['keys'])
     const envArray = env['keys'].split('|')
     console.log('Полученные параметры:', env)
     const nocoKey = envArray[0]
