@@ -9,7 +9,7 @@
           const result = await window.frontgetusersapi.call()
           console.log('Result in getusers html', result)
           setTimeout(() => {
-            console.log('getusers html отправляет данные  в iframe:', result)
+            console.log('getusers html отправляет данные  в parrent frame:', window.parent, result)
             window.parent.postMessage(
               {
                 userList: result['users'],

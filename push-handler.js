@@ -1,11 +1,14 @@
 self.addEventListener('fetch', (event) => {
+  // Игнорируем запросы, которые делает сам Service Worker
+  if (event.request.referrer === event.request.url) {
+    return // Не перехватываем внутренние запросы SW
+  }
+
   // Если запрос к API - всегда ходим в сеть
   if (event.request.url.includes('/api/')) {
     event.respondWith(fetch(event.request))
     return
   }
-  // Для остальных запросов используем стандартную логику
-  // (они будут обработаны Workbox'ом)
 })
 
 self.addEventListener('install', () => {

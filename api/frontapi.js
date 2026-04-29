@@ -36,6 +36,10 @@ window.frontapi = {
     document.body.appendChild(iframe)
     return new Promise((resolve, reject) => {
       window.addEventListener('message', (msg) => {
+        if (!msg.data || msg.data.source === 'react-devtools-content-script') {
+          return
+        }
+        console.log('MSG event in frontapi.js...', msg.data)
         resolved = true
         if (msg.data.__setSecureHttpOnlyCookies) {
           Object.entries(msg.data.__setSecureHttpOnlyCookies).forEach((a) => {
