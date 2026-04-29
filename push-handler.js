@@ -1,12 +1,12 @@
-self.addEventListener('fetch', (event) => {
-  // Если запрос к API - всегда ходим в сеть
-  if (event.request.url.includes('/api/')) {
-    event.respondWith(fetch(event.request))
-    return
-  }
-  // Для остальных запросов используем стандартную логику
-  // (они будут обработаны Workbox'ом)
-})
+// self.addEventListener('fetch', (event) => {
+//   // Если запрос к API - всегда ходим в сеть
+//   if (event.request.url.includes('/api/')) {
+//     event.respondWith(fetch(event.request))
+//     return
+//   }
+//   // Для остальных запросов используем стандартную логику
+//   // (они будут обработаны Workbox'ом)
+// })
 
 self.addEventListener('install', () => {
   self.skipWaiting()
