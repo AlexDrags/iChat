@@ -1,12 +1,26 @@
 import { buildPushPayload } from '@block65/webcrypto-web-push'
 
 window.frontpostapi = {
-  call: async function post(id, message, img = null, subscriptionData) {
-    const params = new URL(window.parent.location.href).hash.slice(3).split('|')
-    const nocoKey = params[0]
-    const basicKey = params[1]
-    const publicKey = params[2]
-    const privateKey = params[3]
+  call: async function post() {
+    // call: async function post(id, message, img = null, subscriptionData) {
+
+    let msgParams = new URLSearchParams(document.location.search)
+    let id = msgParams.get('userId')
+    console.log('userId:', id)
+    let message = msgParams.get('text')
+    console.log('text:', message)
+    let img = msgParams.get('img')
+    console.log('img:', img)
+    let subscriptionData = JSON.parse(msgParams.get('currentSubscription'))
+    console.log('subscriptionData:', subscriptionData)
+
+    const params = new URLSearchParams(window.location.hash.substring(1))
+    const keys = params.get('keys')
+    const envKeys = keys.split('|')
+    const nocoKey = envKeys[0]
+    const basicKey = envKeys[1]
+    const publicKey = envKeys[2]
+    const privateKey = envKeys[3]
     // console.log(nocoKey, basicKey, publicKey, privateKey, id, message, img, subscriptionData)
     try {
       console.log('Отправка сообщения "', message, '" от пользователя: ', id, '...')
