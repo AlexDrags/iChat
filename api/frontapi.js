@@ -26,6 +26,7 @@ window.frontapi = {
     const env_vars = env_vars_hash || env_vars_ls || ''
 
     let url = `api/${action}.html?${new URLSearchParams(params)}#${env_vars}&${new URLSearchParams(env)}`
+    console.log('Generated frontapi url:', url)
     const iframe = document.createElement('iframe')
     iframe.src = url
     iframe.id = reqId

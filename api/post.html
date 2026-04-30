@@ -13,32 +13,30 @@
     </script>
   </head>
   <body>
-    <script type="module" src="./postapi.js"></script>
+    <script type="module" src="postapi.js"></script>
     <script type="module">
       console.log('post html active')
-      window.addEventListener('message', (event) => {
-        console.log('Получено сообщение из iframe:', event.data)
-        // Здесь вы можете обработать полученные данные
+      // window.addEventListener('message', (event) => {
+      // console.log('Получено сообщение из iframe:', event.data)
+      // Здесь вы можете обработать полученные данные
 
-        if (window.frontpostapi) {
-          console.log('post html active')
-          ;(async function postAll() {
-            const result = await window.frontpostapi.call(event.data['userId'], event.data['messages'], event.data['img'], event.data['currentSubscription'])
-            console.log('Result in post html', result)
-            setTimeout(() => {
+      if (window.frontpostapi) {
+        console.log('post html active')
+        ;(async function postAll() {
+          const result = await window.frontpostapi.call()
+        //     event.data['userId'],
+        //     event.data['messages'],
+        //     event.data['img'],
+        //     event.data['currentSubscription'],
+        //   )
+          console.log('Result in post html', result)
+          setTimeout(() => {
             //   console.log('post html отправляет данные  в iframe:', result)
-              document.body.innerHTML =
-                '<pre>' +
-                JSON.stringify(
-                  result,
-                  null,
-                  2,
-                ) +
-                '</pre>'
-            }, 500)
-          })()
-        }
-    })
+            document.body.innerHTML = '<pre>' + JSON.stringify(result, null, 2) + '</pre>'
+          }, 500)
+        })()
+      }
+      // })
     </script>
   </body>
 </html>
