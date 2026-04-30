@@ -1,6 +1,6 @@
 window.frontapi = {
   env_vars_in_location_hash_enabled: false,
-  debug_frame_timeout: 20000,
+  debug_frame_timeout: 30000,
   env_vars_ls_key: '__frontapi_env_vars',
   call: async function (action, params = {}, method = 'POST', headers = {}) {
     // For DEBUG we save cookies in ls as when developing with local files js cookies are not stored
