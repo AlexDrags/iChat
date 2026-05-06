@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <script type="module" src="failtesttechapi.js"></script>
+    <script type="module">
+      console.log('update subscription html active')
+
+      if (window.failtesttechapi) {
+        console.log('post html active')
+        ;(async function update() {
+          const result = await window.failtesttechapi.call()
+          console.log('update subscription html отправляет данные  в parrent frame:', window.parent, result)
+        //   window.parent.postMessage(
+        //       {
+        //         resId: result['Id'],
+        //       },
+        //       '*',
+        //     )
+          setTimeout(() => {
+            document.body.innerHTML = '<pre>' + JSON.stringify(result, null, 2) + '</pre>'
+          }, 500)
+        })()
+      }
+    </script>
+</body>
+</html>
