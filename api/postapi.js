@@ -1,5 +1,37 @@
 import { buildPushPayload } from '@block65/webcrypto-web-push'
 
+async function checkSubscribe(basicKey, nocoKey) {
+  console.log('Запрос наличия подписки пользователя...')
+  try {
+    const response = await fetch(
+      // `https://nocodb-34be9a.ch.daturum.ru/api/v2/tables/m483d7vhcnw0hzq/records?viewId=vw899ht6am0vzep5&limit=25&shuffle=0&offset=0`,
+      `https://alexdrags-ichat-frontapi.ch.daturum.ru/cors/https/nocodb-34be9a.ch.daturum.ru/api/v2/tables/m483d7vhcnw0hzq/records?viewId=vw899ht6am0vzep5&limit=25&shuffle=0&offset=0&x_allow_headers=Authorization,xc-token`,
+      {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          authorization: `Basic ${basicKey}`,
+          'xc-token': nocoKey,
+        },
+      },
+    )
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    console.log('Ответ на наличия подписки пользователей получен, статус:', response.status)
+    const subscription = await response.json()
+    return subscription
+  } catch (error) {
+    console.error(error)
+  }
+}
+// {
+//   "endpoint": "https://updates.push.services.mozilla.com/wpush/v2/gAAAAABqAOOH-cgNmh4eyggQyH_y6km9P-iRNKNNAcmzFDBAztvFJlJ5zFf9QNRZ7RitQk20VtrraA5t_VzCimesIOTiZk31zobKXufM_aS9skLBvIa5GUMBjAIvGn394pxz2rLcCmGyGrZshpf6KRkpIa8-tGg5g0FP887yHMJXkhRjqpvTzFM",
+//   "expirationTime": null,
+//   "keys": {
+//     "auth": "IMkshoNGqbC5FTs_sHhflg",
+//     "p256dh": "BLpxtChF3DlD3HRslxZeNEtkhPO-14PsYC0zEqUrRzO0Ql-uIg7LvdBSssBLvUPKS7cBsjaIG5HNQFnfRga0nJo"
+//   }
+// }
+
 window.frontpostapi = {
   call: async function post() {
     // call: async function post(id, message, img = null, subscriptionData) {
@@ -47,54 +79,59 @@ window.frontpostapi = {
       }
 
       {
-        console.log('Отправка push уведомления...', message, subscriptionData)
+        const allSubscriptions = await checkSubscribe(basicKey, nocoKey)
 
-        const vapid = {
-          subject: 'mailto:your-email@yourdomain.org',
-          publicKey: publicKey,
-          privateKey: privateKey,
-        }
+        console.log('Отправка push уведомления...', message, subscriptionData, allSubscriptions)
 
-        const subscription = {
-          endpoint: subscriptionData.endpoint,
-          expirationTime: null,
-          keys: {
-            p256dh: subscriptionData.keys.p256dh,
-            auth: subscriptionData.keys.auth,
-          },
-        }
+        allSubscriptions['list'].forEach(async (element) => {
+          console.log('element', element)
+          const vapid = {
+            subject: 'mailto:your-email@yourdomain.org',
+            publicKey: publicKey,
+            privateKey: privateKey,
+          }
 
-        const jsonMessageData = JSON.stringify({
-          title: 'Новое сообщение:',
-          body: message,
-          icon: '/icons/icon-192x192.png',
-          badge: '/icons/icon-128x128.png',
-          vibrate: [200, 100, 200],
-          data: {
-            url: '/',
-          },
+          const subscription = {
+            endpoint: element['endpoint'],
+            expirationTime: null,
+            keys: {
+              p256dh: element['p256dh'],
+              auth: element['auth'],
+            },
+          }
+
+          const jsonMessageData = JSON.stringify({
+            title: 'Новое сообщение:',
+            body: message,
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-128x128.png',
+            vibrate: [200, 100, 200],
+            data: {
+              url: '/',
+            },
+          })
+
+          const pushMessage = {
+            data: jsonMessageData,
+            options: {
+              ttl: 60,
+            },
+          }
+
+          const payload = await buildPushPayload(pushMessage, subscription, vapid)
+          const prepareEndpoint = subscription.endpoint.replace('https://', '')
+
+          const notificRes = await fetch(
+            `https://alexdrags-ichat-frontapi.ch.daturum.ru/cors/https/${prepareEndpoint}?x_allow_headers=Authorization,Content-Type,Content-Encoding,Encryption,Crypto-Key,TTL`,
+            payload,
+          )
+
+          if (!notificRes.ok) {
+            throw new Error(`HTTP ${notificRes.status}`)
+          }
+
+          console.log('Отправка уведомления выполнена, статус:', notificRes.status)
         })
-
-        const pushMessage = {
-          data: jsonMessageData,
-          options: {
-            ttl: 60,
-          },
-        }
-
-        const payload = await buildPushPayload(pushMessage, subscription, vapid)
-        const prepareEndpoint = subscription.endpoint.replace('https://', '')
-
-        const notificRes = await fetch(
-          `https://alexdrags-ichat-frontapi.ch.daturum.ru/cors/https/${prepareEndpoint}?x_allow_headers=Authorization,Content-Type,Content-Encoding,Encryption,Crypto-Key,TTL`,
-          payload,
-        )
-
-        if (!notificRes.ok) {
-          throw new Error(`HTTP ${notificRes.status}`)
-        }
-
-        console.log('Отправка уведомления выполнена, статус:', notificRes.status)
       }
 
       console.log('Отправка сообщени выполнена, статус:', sendRes.status)

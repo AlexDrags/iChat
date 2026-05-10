@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-    <script type="module" src="failtesttechapi.js"></script>
+    <script type="module" src="updatesubscription.js"></script>
     <script type="module">
       console.log('update subscription html active')
 
-      if (window.failtesttechapi) {
+      if (window.frontupdatesubscription) {
         console.log('post html active')
         ;(async function update() {
-          const result = await window.failtesttechapi.call()
+          const result = await window.frontupdatesubscription.call()
           console.log('update subscription html отправляет данные  в parrent frame:', window.parent, result)
         //   window.parent.postMessage(
         //       {
