@@ -84,53 +84,55 @@ window.frontpostapi = {
         console.log('Отправка push уведомления...', message, subscriptionData, allSubscriptions)
 
         allSubscriptions['list'].forEach(async (element) => {
-          console.log('element', element)
-          const vapid = {
-            subject: 'mailto:your-email@yourdomain.org',
-            publicKey: publicKey,
-            privateKey: privateKey,
+          if (parseInt(element['user_id']) !== parseInt(id)) {
+            console.log('element', typeof element['user_id'], typeof id)
+            const vapid = {
+              subject: 'mailto:your-email@yourdomain.org',
+              publicKey: publicKey,
+              privateKey: privateKey,
+            }
+
+            const subscription = {
+              endpoint: element['endpoint'],
+              expirationTime: null,
+              keys: {
+                p256dh: element['p256dh'],
+                auth: element['auth'],
+              },
+            }
+
+            const jsonMessageData = JSON.stringify({
+              title: 'Новое сообщение:',
+              body: message,
+              icon: '/icons/icon-192x192.png',
+              badge: '/icons/icon-128x128.png',
+              vibrate: [200, 100, 200],
+              data: {
+                url: '/',
+              },
+            })
+
+            const pushMessage = {
+              data: jsonMessageData,
+              options: {
+                ttl: 60,
+              },
+            }
+
+            const payload = await buildPushPayload(pushMessage, subscription, vapid)
+            const prepareEndpoint = subscription.endpoint.replace('https://', '')
+
+            const notificRes = await fetch(
+              `https://alexdrags-ichat-frontapi.ch.daturum.ru/cors/https/${prepareEndpoint}?x_allow_headers=Authorization,Content-Type,Content-Encoding,Encryption,Crypto-Key,TTL`,
+              payload,
+            )
+
+            if (!notificRes.ok) {
+              throw new Error(`HTTP ${notificRes.status}`)
+            }
+
+            console.log('Отправка уведомления выполнена, статус:', notificRes.status)
           }
-
-          const subscription = {
-            endpoint: element['endpoint'],
-            expirationTime: null,
-            keys: {
-              p256dh: element['p256dh'],
-              auth: element['auth'],
-            },
-          }
-
-          const jsonMessageData = JSON.stringify({
-            title: 'Новое сообщение:',
-            body: message,
-            icon: '/icons/icon-192x192.png',
-            badge: '/icons/icon-128x128.png',
-            vibrate: [200, 100, 200],
-            data: {
-              url: '/',
-            },
-          })
-
-          const pushMessage = {
-            data: jsonMessageData,
-            options: {
-              ttl: 60,
-            },
-          }
-
-          const payload = await buildPushPayload(pushMessage, subscription, vapid)
-          const prepareEndpoint = subscription.endpoint.replace('https://', '')
-
-          const notificRes = await fetch(
-            `https://alexdrags-ichat-frontapi.ch.daturum.ru/cors/https/${prepareEndpoint}?x_allow_headers=Authorization,Content-Type,Content-Encoding,Encryption,Crypto-Key,TTL`,
-            payload,
-          )
-
-          if (!notificRes.ok) {
-            throw new Error(`HTTP ${notificRes.status}`)
-          }
-
-          console.log('Отправка уведомления выполнена, статус:', notificRes.status)
         })
       }
 
