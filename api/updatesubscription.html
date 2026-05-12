@@ -6,7 +6,7 @@
       console.log('update subscription html active')
 
       if (window.frontupdatesubscription) {
-        console.log('post html active')
+        console.log('updatesubscription html active')
         ;(async function update() {
           const result = await window.frontupdatesubscription.call()
           console.log('update subscription html отправляет данные  в parrent frame:', window.parent, result)
