@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <script type="module" src="getmessageapi.js"></script>
+    <script type="module">
+        console.log('Iframe getmessage html loaded')
+        if (window.frontgetmessageapi) {
+        ;(async function getuser() {
+          const result = await window.frontgetmessageapi.call()
+          console.log('Result in getusers html', result)
+          setTimeout(() => {
+            console.log('getmessage html отправляет данные  в parrent frame:', window.parent, result)
+            window.parent.postMessage(
+              {
+                msgList: result['messages'],
+              },
+              '*',
+            )
+            document.body.innerHTML =
+              '<pre>' +
+              JSON.stringify(
+                {
+                  msgList: result['messages'],
+                },
+                null,
+                2,
+              ) +
+              '</pre>'
+          }, 500)
+        })()
+      }
+    </script>
+</body>
+</html>

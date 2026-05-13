@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <script type="module" src="updatesubscription.js"></script>
+    <script type="module">
+      console.log('update subscription html active')
+
+      if (window.frontupdatesubscription) {
+        console.log('updatesubscription html active')
+        ;(async function update() {
+          const result = await window.frontupdatesubscription.call()
+          console.log('update subscription html отправляет данные  в parrent frame:', window.parent, result)
+          window.parent.postMessage(
+              {
+                resResult: result['records'],
+              },
+              '*',
+            )
+          setTimeout(() => {
+            document.body.innerHTML = '<pre>' + JSON.stringify(result, null, 2) + '</pre>'
+          }, 500)
+        })()
+      }
+    </script>
+</body>
+</html>
