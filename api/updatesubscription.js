@@ -1,7 +1,7 @@
 window.frontupdatesubscription = {
   call: async function update() {
-    console.log('Active failtesttechapi call ...')
-    ;(async function updateSubscription() {
+    console.log('Active updatesubscription call ...')
+    // ;(async function updateSubscription() {
       let subscriptionParams = new URLSearchParams(document.location.search)
       let endpoint = subscriptionParams.get('endpoint')
       console.log('endpoint:', endpoint)
@@ -11,7 +11,7 @@ window.frontupdatesubscription = {
       console.log('p256dh:', p256dh)
       let userId = parseInt(localStorage.getItem('userId'))
       let referId = userId === 8 ? 24 : 25
-      console.log('subscriptionData:', endpoint, auth, p256dh)
+      console.log('subscriptionData:', endpoint, auth, p256dh, referId)
       try {
         const params = new URLSearchParams(window.location.hash.substring(1))
         const keys = params.get('keys')
@@ -50,6 +50,6 @@ window.frontupdatesubscription = {
         console.error('Error in update subscription api:...', error)
         return error
       }
-    })()
+    // })()
   },
 }
