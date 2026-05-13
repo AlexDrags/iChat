@@ -4,11 +4,15 @@ self.addEventListener('fetch', (event) => {
     return // Не перехватываем внутренние запросы SW
   }
 
-  // Если запрос к API - всегда ходим в сеть
-  if (event.request.url.includes('/cors/')) {
-    event.respondWith(fetch(event.request))
-    return
-  }
+  // Логируем запрос для отладки
+  console.log('Service Worker fetch:', event.request.method, event.request.url)
+  // Всегда ходим в сеть, обходя кэш
+  event.respondWith(
+    fetch(event.request, { cache: 'no-store' }).catch((error) => {
+      console.error('Service Worker fetch error:', error)
+      throw error
+    }),
+  )
 })
 
 self.addEventListener('install', () => {
