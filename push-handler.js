@@ -6,6 +6,41 @@ self.addEventListener('fetch', (event) => {
 
   // Логируем запрос для отладки
   console.log('Service Worker fetch:', event.request.method, event.request.url)
+
+  // Проверяем, является ли это запросом к updatesubscription
+  if (event.request.url.includes('updatesubscription')) {
+    console.log('Special handling for updatesubscription request:', event.request.url)
+
+    // Для запросов к updatesubscription используем более надежную обработку
+    event.respondWith(
+      fetch(event.request, {
+        cache: 'no-store',
+        mode: 'cors',
+        credentials: 'include',
+      })
+        .then((response) => {
+          console.log('updatesubscription response status:', response.status)
+          return response
+        })
+        .catch((error) => {
+          console.error('Service Worker fetch error for updatesubscription:', error)
+          console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            request: event.request.url,
+            method: event.request.method,
+          })
+
+          // Возвращаем пустой ответ вместо того, чтобы выбрасывать ошибку
+          return new Response('Service Worker fetch failed', {
+            status: 503,
+            statusText: 'Service Unavailable',
+          })
+        }),
+    )
+    return
+  }
+
   // Всегда ходим в сеть, обходя кэш
   event.respondWith(
     fetch(event.request, { cache: 'no-store' }).catch((error) => {

@@ -8,18 +8,34 @@
       if (window.frontupdatesubscription) {
         console.log('updatesubscription html active')
         ;(async function update() {
-          const result = await window.frontupdatesubscription.call()
-          console.log('update subscription html отправляет данные  в parrent frame:', window.parent, result)
-          window.parent.postMessage(
-              {
-                resResult: result['records'],
-              },
-              '*',
-            )
-          setTimeout(() => {
-            document.body.innerHTML = '<pre>' + JSON.stringify(result, null, 2) + '</pre>'
-          }, 500)
+          try {
+            const result = await window.frontupdatesubscription.call()
+            console.log('update subscription html отправляет данные  в parrent frame:', window.parent, result)
+            
+            // Проверяем, есть ли ошибка в результате
+            if (result && result.error) {
+              console.error('Error in update subscription:', result.error)
+              document.body.innerHTML = '<pre style="color: red;">Error: ' + result.error + '</pre>'
+              return
+            }
+            
+            window.parent.postMessage(
+                {
+                  resResult: result['records'],
+                },
+                '*',
+              )
+            setTimeout(() => {
+              document.body.innerHTML = '<pre>' + JSON.stringify(result, null, 2) + '</pre>'
+            }, 500)
+          } catch (error) {
+            console.error('Error in update subscription html:', error)
+            document.body.innerHTML = '<pre style="color: red;">Error: ' + error.message + '</pre>'
+          }
         })()
+      } else {
+        console.error('frontupdatesubscription not available')
+        document.body.innerHTML = '<pre style="color: red;">Error: frontupdatesubscription not available</pre>'
       }
     </script>
 </body>
