@@ -4,6 +4,7 @@ window.frontupdatesubscription = {
 
     // Проверяем наличие необходимых параметров
     let subscriptionParams = new URLSearchParams(document.location.search)
+    let userId = parseInt(subscriptionParams.get('id'))
     let endpoint = subscriptionParams.get('endpoint')
     console.log('endpoint:', endpoint)
     let auth = subscriptionParams.get('auth')
@@ -18,7 +19,6 @@ window.frontupdatesubscription = {
       return { error: error.message, missingParams: { endpoint, auth, p256dh } }
     }
 
-    let userId = parseInt(localStorage.getItem('userId'))
     if (!userId) {
       const error = new Error('User ID not found in localStorage')
       console.error('Error in update subscription api:', error)
